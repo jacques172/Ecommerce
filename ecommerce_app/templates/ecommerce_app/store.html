@@ -1,0 +1,105 @@
+{% extends 'ecommerce_app/main.html' %}
+{% load static %}
+{% block content %}
+     <h3>Store</h3>
+     <div class="row">
+        <div class="col-md-12">
+            <form class="card card-sm" method="GET">
+                <div class="card-body row no-gutters align-items-center">
+                    <div class="col">
+                        <input type="search" name="query" placeholder="Enter the name of the product" class="form-control form-control-borderless" value="{{ request.GET.query }}">
+                    </div>
+                    <div class="col-auto">
+                        <button type="submit" class="btn btn-success">Search</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+     <div class="product-container">
+     {% for product in page_obj %}
+     <div class="col-lg-4">
+        <img class="thumbnail" src="{{ product.image.url }}">
+        <div class="box-element product">
+            <div id="aa{{product.id}}"><strong><a href="{% url 'product_detail' product.pk product.slug %}">{{ product.name }}</a></strong></div>
+            <hr>
+            <button id="{{ product.id }}" class="btn ted btn-outline-secondary add-btn"><a href="{% url 'product_detail' product.id product.slug %}">Add to Card</a></button>
+            <a class="btn btn-outline-success" href="{% url 'product_detail' product.pk product.slug %}">View</a>
+            <h4 style="display: inline-block; float: right"><strong>${{ product.price }}</strong></h4>
+    
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Pagination links -->
+<div class="pagination-links">
+    <ul class="pagination">
+        {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.previous_page_number }}">Previous</a>
+            </li>
+        {% endif %}
+        {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
+                <li class="page-item active">
+                    <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                </li>
+            {% else %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                </li>
+            {% endif %}
+        {% endfor %}
+        {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?page={{ page_obj.next_page_number }}">Next</a>
+            </li>
+        {% endif %}
+    </ul>
+</div>
+{% endblock content %}
+
+{% block js %}
+<script type="text/javascript">
+    if (localStorage.getItem('panier') == null) {
+        var panier = {};
+    } else {
+        panier = JSON.parse(localStorage.getItem('panier'));
+    }
+    var cartCount = Object.keys(panier).length;
+    document.getElementById("cart-count").textContent = cartCount;
+    
+    $(document).on('click', '.ted', function() {
+        var item_id = this.id.toString();
+        if (panier[item_id] != undefined) {
+            panier[item_id] = panier[item_id] + 1;
+        } else {
+            panier[item_id] = 1;
+        }
+        console.log(panier);
+        localStorage.setItem('panier', JSON.stringify(panier));
+    
+        var cartCount = Object.keys(panier).length;
+        document.getElementById("cart-count").textContent = cartCount;
+    });
+    
+    AfficherList(panier);
+    
+    function AfficherList(panier){
+        var panierString = "";
+        panierString += "<h5>Voici votre liste</h5>";
+        var index = 1;
+        for(var x in panier){
+            panierString += index
+            panierString += document.getElementById("aa"+x).innerHTML + " Qte: "+ panier[x] + "</br>";
+            index +=1
+        }
+        panierString += "<a href='/cart' class = 'btn btn-primary'>Checkout</a>";
+        $('[data-toggle="popover"]').popover();
+        document.getElementById('panier').setAttribute('data-content', panierString);
+    }
+    </script>
+    
+{% endblock js %}

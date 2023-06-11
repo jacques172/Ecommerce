@@ -1,0 +1,31 @@
+{% extends 'ecommerce_app/main.html' %}
+{% load static %}
+{% block title %}
+    {{ product.name }} |
+{% endblock %}
+
+{% block content %}
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6">
+                <div class="product-image">
+                    <img src="{{ product.image.url }}" alt="{{ product.name }}" class="img-fluid">
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="product-details">
+                    <a href="{% url 'index' %}" class="back-link">&lt; Back to All Products</a>
+                    <h2 class="product-name" style="color: blueviolet;">{{ product.name }}</h2>
+                    <p class="product-price">Price: ${{ product.price }}</p>
+                    <p class="product-description">{{ product.description }}</p>
+
+                    <form action="{% url 'product_detail' product.id product.slug %}" method="post">
+                        {% csrf_token %}
+                        {{ form.as_p }}
+                        <input type="submit" value="Add to Cart" class="btn btn-primary">
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
