@@ -1,0 +1,50 @@
+{% extends 'ecommerce_app/main.html' %}
+{% load static %}
+
+{% block content %}
+<div class="row">
+	<div class="col-lg-6">
+		<div class="box-element" id="form-wrapper">
+            <form id="form"  method="post" class="needs-validation">
+            {% csrf_token %}
+                <div id="user-info">
+                    <div class="form-field">
+                        <label for="id_name" >Name</label>
+                            {{ form.name }}
+                    </div>
+                    <div class="form-field">
+                        <label for="id_email">Email</label>
+                        {{ form.email }}
+                    </div>
+                </div>
+                
+                <div id="shipping-info">
+                    <hr>
+                    <p>Shipping Information:</p>
+                    <hr>
+                    <div class="form-field">
+                        <label for="id_country">Country</label>
+                        {{ form.country }}
+                    </div>
+                    <div class="form-field">
+                        <label for="id_state">State</label>
+                        {{ form.state }}
+                    </div>
+                    <div class="form-field">
+                        <label for="id_city">City</label>
+                        {{ form.city }}
+                    </div>
+                    <div class="form-field">
+                        <label for="id_postal_code">Postal Code</label>
+                        {{ form.postal_code }}
+                    </div>
+                </div>
+                <hr>
+                <input id="form-button" class="btn btn-success btn-block" type="submit" value="Continue">
+            </form>
+		</div>
+		
+	</div>
+</div>>
+
+{% endblock %}
